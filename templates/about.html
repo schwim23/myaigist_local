@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About MyAIGist - AI-Powered Q&A</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Google Analytics -->
+    {% if ga_measurement_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_measurement_id }}');
+        
+        // Make gtag available globally for event tracking
+        window.gtag = gtag;
+    </script>
+    {% endif %}
+    
+    <style>
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .about-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .tech-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .tech-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .feature-icon {
+            font-size: 1.2rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .social-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Header -->
+        <header class="nav-header">
+            <div class="logo">
+                <div style="width:60px;height:60px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;">🧠</div>
+                <h1 style="color: white;">MyAIGist</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/terms">📜 Terms</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdCLBOSFTJoIX4Wh6X0Umg4Fxr0JZdz2G-Z7VKtG7sOef-DXg/viewform" target="_blank">💬 Feedback</a>
+            </nav>
+        </header>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <h2>About MyAIGist <span class="version-badge">v2.0</span></h2>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin: 20px 0;">
+                MyAIGist is an intelligent AI-powered assistant that transforms any content into an interactive Q&A experience using <strong>real semantic search with OpenAI embeddings</strong>. Upload documents or paste text to get instant multi-level summaries and ask detailed questions using text or voice input.
+            </p>
+        </section>
+
+        <!-- Key Features -->
+        <section class="about-section">
+            <h3>✨ Key Features</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <span><strong>Real Semantic Search</strong> - OpenAI embeddings with vector similarity</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📄</span>
+                    <span><strong>Multi-Format Support</strong> - PDF, DOCX, TXT files + text input</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📋</span>
+                    <span><strong>3-Level Summaries</strong> - Quick, Standard, or Detailed analysis</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🎤</span>
+                    <span><strong>Voice Features</strong> - Speech-to-text questions + audio responses</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔒</span>
+                    <span><strong>Session Isolation</strong> - Private vector storage per user session</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">☁️</span>
+                    <span><strong>Cloud Native</strong> - AWS Fargate with auto-scaling</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <span><strong>Analytics Ready</strong> - Google Analytics 4 integration</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🐳</span>
+                    <span><strong>Container Ready</strong> - Docker with persistent storage</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture -->
+        <section class="about-section">
+            <h3>🏗 Technical Architecture</h3>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>🤖 AI & ML Stack</h4>
+                    <ul>
+                        <li><strong>OpenAI GPT-4o-mini</strong> - Chat & summarization</li>
+                        <li><strong>text-embedding-3-small</strong> - Semantic embeddings</li>
+                        <li><strong>Whisper</strong> - Speech-to-text transcription</li>
+                        <li><strong>TTS</strong> - Text-to-speech synthesis</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>🔍 Vector Search</h4>
+                    <ul>
+                        <li><strong>OpenAI Embeddings</strong> - 1536-dimensional vectors</li>
+                        <li><strong>Cosine Similarity</strong> - Semantic matching</li>
+                        <li><strong>NumPy Operations</strong> - Efficient vector math</li>
+                        <li><strong>Pickle Persistence</strong> - Container-friendly storage</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>⚙️ Backend & Infrastructure</h4>
+                    <ul>
+                        <li><strong>Python Flask</strong> - Web framework</li>
+                        <li><strong>AWS Fargate</strong> - Serverless containers</li>
+                        <li><strong>EFS Storage</strong> - Persistent file system</li>
+                        <li><strong>Application Load Balancer</strong> - High availability</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>🎨 Frontend & UX</h4>
+                    <ul>
+                        <li><strong>Vanilla JavaScript</strong> - No frameworks</li>
+                        <li><strong>CSS Grid/Flexbox</strong> - Responsive design</li>
+                        <li><strong>Web Audio API</strong> - Voice recording</li>
+                        <li><strong>Glassmorphism UI</strong> - Modern aesthetics</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>🛡️ Security & Privacy</h4>
+                    <ul>
+                        <li><strong>Session-Based Isolation</strong> - Per-user vector stores</li>
+                        <li><strong>SSL/TLS Encryption</strong> - End-to-end security</li>
+                        <li><strong>Auto File Cleanup</strong> - 24h data retention</li>
+                        <li><strong>No Cross-User Access</strong> - Complete privacy</li>
+                    </ul>
+                </div>
+                
+                <div class="tech-card">
+                    <h4>📦 Deployment & DevOps</h4>
+                    <ul>
+                        <li><strong>Docker Containers</strong> - Multi-stage builds</li>
+                        <li><strong>ECR Registry</strong> - Container image storage</li>
+                        <li><strong>ECS Auto-scaling</strong> - Dynamic capacity</li>
+                        <li><strong>CloudWatch Monitoring</strong> - Observability</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="about-section">
+            <h3>🔧 How It Works</h3>
+            <div style="display: grid; gap: 20px; margin: 20px 0;">
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
+                    <div><strong>Document Processing:</strong> Upload files or paste text → Extract clean content → Intelligent text chunking</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
+                    <div><strong>Embedding Generation:</strong> Create semantic vectors using OpenAI's text-embedding-3-small model</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
+                    <div><strong>Vector Storage:</strong> Session-isolated storage with automatic persistence and cleanup</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
+                    <div><strong>Smart Q&A:</strong> Semantic similarity search → Context retrieval → GPT-powered answers</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance & Scaling -->
+        <section class="about-section">
+            <h3>⚡ Performance & Scaling</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⏱️</div>
+                    <div><strong>3-8 seconds</strong><br>Text processing</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">💾</div>
+                    <div><strong>~150MB</strong><br>Base memory</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
+                    <div><strong>Auto-scaling</strong><br>1-10 containers</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🌐</div>
+                    <div><strong>Multi-user</strong><br>Session isolation</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Links and Contact -->
+        <section class="about-section">
+            <h3>🔗 Links & Contact</h3>
+            <p style="margin-bottom: 20px;">Built with ❤️ by Mike Schwimmer - AI enthusiast and software engineer passionate about making AI accessible through intuitive interfaces.</p>
+            
+            <div class="social-links">
+                <a href="https://github.com/schwim23/myaigist" target="_blank">
+                    <span>⭐</span> GitHub Repository
+                </a>
+                <a href="https://www.linkedin.com/in/mschwimmer/" target="_blank">
+                    <span>👔</span> LinkedIn Profile
+                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdCLBOSFTJoIX4Wh6X0Umg4Fxr0JZdz2G-Z7VKtG7sOef-DXg/viewform" target="_blank">
+                    <span>💬</span> Send Feedback
+                </a>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                <h4 style="color: #1976d2; margin-bottom: 10px;">🚀 Roadmap</h4>
+                <ul style="color: #1976d2;">
+                    <li><strong>v2.1:</strong> Streaming responses, multiple document collections, enhanced analytics</li>
+                    <li><strong>v3.0:</strong> Multi-document analysis, custom embeddings, enterprise SSO, PWA support</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer style="text-align: center; margin: 40px 0; color: white; opacity: 0.8;">
+            <p>© 2025 MyAIGist. Built with OpenAI, Flask, and deployed on AWS Fargate.</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">
+                <a href="/" style="color: white;">Home</a> • 
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdCLBOSFTJoIX4Wh6X0Umg4Fxr0JZdz2G-Z7VKtG7sOef-DXg/viewform" target="_blank" style="color: white;">Feedback</a> • 
+                <a href="https://github.com/schwim23/myaigist" target="_blank" style="color: white;">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Google Analytics event tracking
+        function trackEvent(eventName, parameters = {}) {
+            if (typeof window.gtag === 'function') {
+                window.gtag('event', eventName, parameters);
+            }
+        }
+
+        // Track page visit
+        trackEvent('page_view', {
+            page_title: 'About Page',
+            page_location: window.location.href
+        });
+
+        // Track external link clicks
+        document.querySelectorAll('a[target="_blank"]').forEach(link => {
+            link.addEventListener('click', function() {
+                trackEvent('external_link_click', {
+                    link_url: this.href,
+                    link_text: this.textContent
+                });
+            });
+        });
+    </script>
+</body>
+</html>

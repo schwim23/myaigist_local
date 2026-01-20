@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAIGist - AI-Powered Q&A</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <!-- Google Analytics -->
+    {% if ga_measurement_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ ga_measurement_id }}');
+        
+        // Make gtag available globally for event tracking
+        window.gtag = gtag;
+    </script>
+    {% endif %}
+    
+</head>
+<body>
+    <!-- File Management Shelf -->
+    <div id="file-shelf" class="file-shelf minimized">
+        <div class="file-shelf-header">
+            <h3 class="file-shelf-title">
+                📁 Your Documents
+                <span id="file-count-badge" class="file-count-badge">0</span>
+            </h3>
+            <button id="shelf-toggle" class="shelf-toggle" title="Toggle file shelf">◀</button>
+        </div>
+        <ul id="file-list" class="file-list">
+            <li class="no-files-message">No documents uploaded yet</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <!-- Navigation Header -->
+        <header class="nav-header">
+            <div style="text-align: center;">
+                <div class="logo">
+                    <div style="width:60px;height:60px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:2rem;font-weight:bold;">🧠</div>
+                    <h1 style="color: white;">MyAIGist</h1>
+                </div>
+                <p class="subtitle" style="color: white; opacity: 0.9;">AI-Powered Content Analysis & Q&A</p>
+            </div>
+            <nav class="nav-links">
+                <a href="/about">ℹ️ About</a>
+                <a href="/terms">📜 Terms</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdCLBOSFTJoIX4Wh6X0Umg4Fxr0JZdz2G-Z7VKtG7sOef-DXg/viewform" target="_blank">💬 Feedback</a>
+            </nav>
+        </header>
+
+        <!-- Content Input Section -->
+        <section class="input-section">
+            <div class="unified-input-header">
+                <h3 class="input-title">📋 Add Content for Analysis</h3>
+                <p class="input-limit">Add up to 5 items (text entries or documents) for AI analysis</p>
+            </div>
+
+            <!-- Input Actions -->
+            <div class="input-actions">
+                <button id="add-text-btn" class="action-input-btn">
+                    ✍️ Add Text Entry
+                </button>
+                <div class="file-input-container">
+                    <input type="file" id="file-input" class="file-input" multiple accept=".pdf,.docx,.txt" />
+                    <label for="file-input" class="file-input-label action-input-btn">
+                        📄 Add Document(s)
+                    </label>
+                </div>
+                <button id="add-url-btn" class="action-input-btn">
+                    🔗 Add Website URL
+                </button>
+                <div class="file-input-container">
+                    <input type="file" id="media-input" class="file-input" multiple accept="audio/*,video/*,.mp3,.wav,.m4a,.aac,.ogg,.wma,.flac,.mp4,.avi,.mov,.wmv,.webm,.mkv" />
+                    <label for="media-input" class="file-input-label action-input-btn">
+                        🎬 Add Audio/Video
+                    </label>
+                </div>
+            </div>
+
+            <!-- Selected Inputs Display -->
+            <div id="selected-inputs" class="selected-inputs">
+                <div id="selected-inputs-list"></div>
+            </div>
+
+            <!-- Summary Options -->
+            <div class="summary-options">
+                <label class="summary-label">📋 Summary Detail Level:</label>
+                <div class="summary-buttons">
+                    <button type="button" class="summary-btn" data-level="quick">
+                        <span class="summary-icon">⚡</span>
+                        <span class="summary-title">Quick</span>
+                        <span class="summary-desc">2-3 key points</span>
+                    </button>
+                    <button type="button" class="summary-btn active" data-level="standard">
+                        <span class="summary-icon">📄</span>
+                        <span class="summary-title">Standard</span>
+                        <span class="summary-desc">Balanced overview</span>
+                    </button>
+                    <button type="button" class="summary-btn" data-level="detailed">
+                        <span class="summary-icon">📚</span>
+                        <span class="summary-title">Detailed</span>
+                        <span class="summary-desc">Comprehensive analysis</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Voice Options -->
+            <div class="voice-options">
+                <label class="voice-label">🔊 Voice for Audio Responses:</label>
+                <div class="voice-selector">
+                    <select id="voice-select" class="voice-dropdown">
+                        <option value="nova" selected>Nova (Default) - Balanced & Clear</option>
+                        <option value="alloy">Alloy - Neutral & Professional</option>
+                        <option value="echo">Echo - Warm & Friendly</option>
+                        <option value="fable">Fable - Expressive & Dynamic</option>
+                        <option value="onyx">Onyx - Deep & Authoritative</option>
+                        <option value="shimmer">Shimmer - Bright & Energetic</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="process-btn" class="primary-btn">🚀 Analyze Content</button>
+        </section>
+
+        <!-- Processing Status -->
+        <div id="status" class="status hidden"></div>
+
+        <!-- Summary Section -->
+        <section id="summary-section" class="summary-section hidden">
+            <div class="summary-header">
+                <h2>📋 Content Summary</h2>
+                <span id="summary-level-indicator" class="summary-level-badge">Standard</span>
+            </div>
+            <div id="summary-text" class="summary-text"></div>
+            <div id="summary-actions" class="summary-actions hidden">
+                <button id="copy-summary-btn" class="action-btn copy-btn" title="Copy summary to clipboard">
+                    📋 Copy Summary
+                </button>
+                <button id="email-summary-btn" class="action-btn email-btn" title="Email summary">
+                    ✉️ Email Summary
+                </button>
+            </div>
+            <div id="audio-loading" class="audio-loading hidden">
+                <div class="audio-loading-content">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">🎵 Generating audio summary...</span>
+                </div>
+            </div>
+            <audio id="summary-audio" controls class="audio-player"></audio>
+        </section>
+
+        <!-- Q&A Section -->
+        <section id="qa-section" class="qa-section hidden">
+            <h2>💬 Ask Questions</h2>
+            
+            <!-- Question Input -->
+            <div class="question-input">
+                <div class="input-group-simple">
+                    <input 
+                        type="text" 
+                        id="question-text" 
+                        placeholder="Type your question or click the mic to speak..."
+                    />
+                    <button id="mic-btn" class="mic-button" type="button">
+                        <span class="mic-icon">🎤</span>
+                        <span class="mic-text">Speak</span>
+                    </button>
+                </div>
+                <button id="ask-btn" class="primary-btn">Ask Question</button>
+            </div>
+
+            <!-- Recording Status -->
+            <div id="recording-status" class="recording-status hidden">
+                <div class="recording-info">
+                    <div class="recording-indicator">
+                        <span class="pulse-dot"></span>
+                        <span class="recording-text">🎤 Recording... Click mic again to stop</span>
+                    </div>
+                    <div class="recording-timer">0:00</div>
+                </div>
+            </div>
+
+            <!-- Playback Section -->
+            <div id="playback-section" class="playback-section hidden">
+                <div class="playback-info">
+                    <span class="playback-label">🎵 Your Question:</span>
+                    <audio id="recorded-audio" controls></audio>
+                    <button id="transcribe-btn" class="secondary-btn">✅ Transcribe & Use</button>
+                    <button id="re-record-btn" class="secondary-btn">🔄 Record Again</button>
+                </div>
+            </div>
+
+            <!-- Answer Section -->
+            <div id="answer-section" class="answer-section">
+                <div id="answer-text" class="answer-text"></div>
+                <audio id="answer-audio" controls class="audio-player"></audio>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
