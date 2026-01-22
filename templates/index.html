@@ -103,20 +103,6 @@
                 </div>
             </div>
 
-            <!-- Voice Options -->
-            <div class="voice-options">
-                <label class="voice-label">🔊 Voice for Audio Responses:</label>
-                <div class="voice-selector">
-                    <select id="voice-select" class="voice-dropdown">
-                        <option value="nova" selected>Nova (Default) - Balanced & Clear</option>
-                        <option value="alloy">Alloy - Neutral & Professional</option>
-                        <option value="echo">Echo - Warm & Friendly</option>
-                        <option value="fable">Fable - Expressive & Dynamic</option>
-                        <option value="onyx">Onyx - Deep & Authoritative</option>
-                        <option value="shimmer">Shimmer - Bright & Energetic</option>
-                    </select>
-                </div>
-            </div>
 
             <button id="process-btn" class="primary-btn">🚀 Analyze Content</button>
         </section>
@@ -139,13 +125,6 @@
                     ✉️ Email Summary
                 </button>
             </div>
-            <div id="audio-loading" class="audio-loading hidden">
-                <div class="audio-loading-content">
-                    <div class="loading-spinner"></div>
-                    <span class="loading-text">🎵 Generating audio summary...</span>
-                </div>
-            </div>
-            <audio id="summary-audio" controls class="audio-player"></audio>
         </section>
 
         <!-- Q&A Section -->
@@ -155,44 +134,19 @@
             <!-- Question Input -->
             <div class="question-input">
                 <div class="input-group-simple">
-                    <input 
-                        type="text" 
-                        id="question-text" 
-                        placeholder="Type your question or click the mic to speak..."
+                    <input
+                        type="text"
+                        id="question-text"
+                        placeholder="Type your question here..."
                     />
-                    <button id="mic-btn" class="mic-button" type="button">
-                        <span class="mic-icon">🎤</span>
-                        <span class="mic-text">Speak</span>
-                    </button>
                 </div>
                 <button id="ask-btn" class="primary-btn">Ask Question</button>
             </div>
 
-            <!-- Recording Status -->
-            <div id="recording-status" class="recording-status hidden">
-                <div class="recording-info">
-                    <div class="recording-indicator">
-                        <span class="pulse-dot"></span>
-                        <span class="recording-text">🎤 Recording... Click mic again to stop</span>
-                    </div>
-                    <div class="recording-timer">0:00</div>
-                </div>
-            </div>
-
-            <!-- Playback Section -->
-            <div id="playback-section" class="playback-section hidden">
-                <div class="playback-info">
-                    <span class="playback-label">🎵 Your Question:</span>
-                    <audio id="recorded-audio" controls></audio>
-                    <button id="transcribe-btn" class="secondary-btn">✅ Transcribe & Use</button>
-                    <button id="re-record-btn" class="secondary-btn">🔄 Record Again</button>
-                </div>
-            </div>
 
             <!-- Answer Section -->
             <div id="answer-section" class="answer-section">
                 <div id="answer-text" class="answer-text"></div>
-                <audio id="answer-audio" controls class="audio-player"></audio>
             </div>
         </section>
     </div>
