@@ -19,7 +19,7 @@ class OllamaClient:
         self.host = os.getenv('OLLAMA_HOST', 'http://localhost:11434')
         self.model = os.getenv('OLLAMA_MODEL', 'qwen2.5:14b')
         self.embed_model = os.getenv('OLLAMA_EMBED_MODEL', 'nomic-embed-text')
-        self.timeout = int(os.getenv('OLLAMA_TIMEOUT', '120'))  # 2 minutes default
+        self.timeout = int(os.getenv('OLLAMA_TIMEOUT', '300'))  # 5 minutes default for slower hardware
 
         logger.info(f"🤖 Ollama client initialized: {self.host}, model={self.model}")
 

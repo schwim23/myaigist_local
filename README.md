@@ -6,11 +6,9 @@ MyAIGist Local runs entirely on your machine using free, open-source AI models v
 
 ## Features
 
-- **Document Processing**: PDF, DOCX, TXT, and web URLs
+- **Document Processing**: PDF, DOCX, and TXT files
 - **AI Summarization**: 3 detail levels (Quick, Standard, Detailed)
 - **RAG Q&A**: Question-answering using your uploaded documents
-- **Audio/Video Transcription**: Powered by Whisper
-- **Text-to-Speech**: Natural voice synthesis with Piper
 - **Batch Processing**: Handle multiple files at once
 - **100% Local**: No data sent to cloud services
 - **Privacy-First**: All processing happens on your machine
@@ -51,9 +49,7 @@ MyAIGist Local consists of 4 Docker containers:
 | Service | Purpose | Port | Model |
 |---------|---------|------|-------|
 | **App** | Flask web application | 8000 | - |
-| **Ollama** | LLM & embeddings | 11434 | qwen2.5:14b, nomic-embed-text |
-| **Whisper** | Audio transcription | 9000 | Whisper medium |
-| **Piper** | Text-to-speech | 10200 | en_US-lessac-medium |
+| **Ollama** | LLM & embeddings | 11434 | tinyllama, nomic-embed-text |
 
 ## Usage
 
@@ -61,8 +57,6 @@ MyAIGist Local consists of 4 Docker containers:
 
 1. **Upload Documents**: Drag & drop PDF, DOCX, or TXT files
 2. **Enter Text**: Paste text directly for analysis
-3. **Add URLs**: Enter web URLs to crawl and summarize
-4. **Record Audio**: Use voice input for questions
 
 ### Summarization Levels
 

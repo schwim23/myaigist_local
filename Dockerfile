@@ -30,5 +30,5 @@ ENV FLASK_ENV=production
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Use gunicorn for production deployment
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "300", "main:app"]
+# Use gunicorn for production deployment with extended timeout for slow hardware
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "1", "--timeout", "600", "--graceful-timeout", "600", "main:app"]

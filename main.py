@@ -14,9 +14,7 @@ load_dotenv()
 try:
     from agents.document_processor import DocumentProcessor
     from agents.summarizer import Summarizer
-    from agents.transcriber import Transcriber
     from agents.qa_agent import QAAgent
-    from agents.url_crawler import url_crawler
     print("✅ Successfully imported all agent modules")
 except ImportError as e:
     print(f"❌ Import error: {e}")
@@ -72,7 +70,6 @@ except Exception as e:
 # Initialize agents with proper error handling
 doc_processor = None
 summarizer = None
-transcriber = None
 qa_agent = None
 
 try:
@@ -88,19 +85,13 @@ except Exception as e:
     print(f"❌ Error initializing Summarizer: {e}")
 
 try:
-    transcriber = Transcriber()
-    print("✅ Transcriber initialized")
-except Exception as e:
-    print(f"❌ Error initializing Transcriber: {e}")
-
-try:
     qa_agent = QAAgent()
     print("✅ QAAgent initialized")
 except Exception as e:
     print(f"❌ Error initializing QAAgent: {e}")
 
 # Check if all required agents are available (except qa_agent which is now session-based)
-all_agents_ready = all([doc_processor, summarizer, transcriber])
+all_agents_ready = all([doc_processor, summarizer])
 if all_agents_ready:
     print("✅ All core agents initialized successfully")
 else:
@@ -979,35 +970,16 @@ def upload_multiple_files():
                     'error': f'Error transcribing media: {str(e)}'
                 })
         
-        # Process URLs
-        for url in urls:
-            try:
-                crawl_result = url_crawler.crawl_url(url)
-                
-                if crawl_result['success']:
-                    input_data.append({
-                        'type': 'url',
-                        'url': url,
-                        'title': crawl_result['title'],
-                        'text': crawl_result['content'],
-                        'success': True
-                    })
-                else:
-                    input_data.append({
-                        'type': 'url',
-                        'url': url,
-                        'title': url,
-                        'success': False,
-                        'error': crawl_result['error']
-                    })
-                    
-            except Exception as e:
+        # URL processing disabled for local-only deployment
+        if urls:
+            print("⚠️  URL processing is disabled in local mode")
+            for url in urls:
                 input_data.append({
                     'type': 'url',
                     'url': url,
                     'title': url,
                     'success': False,
-                    'error': f'Error crawling URL: {str(e)}'
+                    'error': 'URL processing is disabled in local mode'
                 })
         
         # Filter successful extractions

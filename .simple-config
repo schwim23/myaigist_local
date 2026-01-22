@@ -1,0 +1,11 @@
+# MyAIGist Local - Simplified Text-Only Mode
+# This file indicates audio/video features have been disabled
+
+AUDIO_ENABLED=false
+VIDEO_ENABLED=false
+URL_CRAWLING_ENABLED=false
+
+# Text-only features
+DOCUMENT_PROCESSING=true
+RAG_QA=true
+SUMMARIZATION=true
