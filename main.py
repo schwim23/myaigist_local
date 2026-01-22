@@ -296,16 +296,7 @@ def process_content():
                 
                 # Process text with specified summary level
                 summary = summarizer.summarize(text, detail_level=summary_level)
-                
-                # Generate audio if transcriber is available
-                audio_url = None
-                if transcriber:
-                    try:
-                        audio_url = transcriber.text_to_speech(summary, voice=voice)
-                        print(f"🔊 Generated audio with {voice} voice: {audio_url}")
-                    except Exception as e:
-                        print(f"⚠️  Audio generation failed: {e}")
-                
+
                 # Store for QA with session-based agent - WITH ENHANCED DEBUGGING
                 qa_success = False
                 session_qa = get_session_qa_agent()
@@ -346,7 +337,6 @@ def process_content():
                 
                 return jsonify({
                     'summary': summary,
-                    'audio_url': audio_url,
                     'summary_level': summary_level,
                     'qa_stored': qa_success,
                     'success': True
@@ -389,16 +379,7 @@ def process_content():
                 
                 # Generate summary with specified level
                 summary = summarizer.summarize(text, detail_level=summary_level)
-                
-                # Generate audio if transcriber is available
-                audio_url = None
-                if transcriber:
-                    try:
-                        audio_url = transcriber.text_to_speech(summary, voice=voice)
-                        print(f"🔊 Generated audio with {voice} voice: {audio_url}")
-                    except Exception as e:
-                        print(f"⚠️  Audio generation failed: {e}")
-                
+
                 # Store for QA with session-based agent - WITH ENHANCED DEBUGGING
                 qa_success = False
                 session_qa = get_session_qa_agent()
@@ -437,7 +418,6 @@ def process_content():
                 
                 return jsonify({
                     'summary': summary,
-                    'audio_url': audio_url,
                     'summary_level': summary_level,
                     'qa_stored': qa_success,
                     'success': True
@@ -566,16 +546,7 @@ def ask_question():
         
         # Get answer from QA agent
         answer = session_qa.answer_question(question)
-        
-        # Generate audio for answer if transcriber is available
-        audio_url = None
-        if transcriber:
-            try:
-                audio_url = transcriber.text_to_speech(answer, voice=voice)
-                print(f"🔊 Generated audio for answer with {voice} voice: {audio_url}")
-            except Exception as e:
-                print(f"⚠️  Audio generation failed: {e}")
-        
+
         # Track CloudWatch metrics for Q&A
         response_time = (datetime.now() - start_time).total_seconds()
         has_context = len(session_qa.documents) > 0 if session_qa else False
@@ -583,7 +554,6 @@ def ask_question():
         
         return jsonify({
             'answer': answer,
-            'audio_url': audio_url,
             'qa_status': status,
             'success': True
         })
@@ -1250,9 +1220,7 @@ def upload_multiple_files():
             'total_media': len([f for f in input_data if f.get('type') == 'media']),
             'total_urls': len([f for f in input_data if f.get('type') == 'url']),
             'combined_summary': combined_summary,
-            'audio_url': None,  # Will be generated separately
-            'user_id': user_id,
-            'voice': voice  # Include voice for audio generation
+            'user_id': user_id
         })
         
     except Exception as e:
@@ -1267,51 +1235,8 @@ def upload_multiple_files():
 
 @app.route('/api/generate-audio', methods=['POST'])
 def generate_audio():
-    """Generate audio for text content (used for progressive UI updates)"""
-    start_time = datetime.now()
-    
-    try:
-        if not transcriber:
-            return jsonify({'error': 'Text-to-speech not available'}), 500
-        
-        data = request.get_json()
-        text = data.get('text')
-        voice = data.get('voice', 'nova')
-        
-        if not text:
-            return jsonify({'error': 'No text provided'}), 400
-        
-        print(f"🔊 Generating audio for text ({len(text)} chars) with voice: {voice}")
-        
-        try:
-            audio_url = transcriber.text_to_speech(text, voice=voice)
-            
-            # Track CloudWatch metrics for TTS
-            tts_time = (datetime.now() - start_time).total_seconds()
-            metrics_service.track_voice_usage('tts', tts_time, True)
-            
-            return jsonify({
-                'success': True,
-                'audio_url': audio_url
-            })
-        except Exception as tts_error:
-            print(f"⚠️ TTS generation failed: {tts_error}")
-            
-            # Track TTS error in CloudWatch
-            metrics_service.track_error('TextToSpeech', 'generate_audio', 'Error')
-            
-            return jsonify({
-                'success': False,
-                'error': f'Audio generation failed: {str(tts_error)}'
-            }), 500
-            
-    except Exception as e:
-        print(f"❌ Error in audio generation: {e}")
-        
-        # Track general error in CloudWatch
-        metrics_service.track_error('TextToSpeech', 'generate_audio', 'Error')
-        
-        return jsonify({'error': str(e)}), 500
+    """Audio generation disabled - text-only mode"""
+    return jsonify({'error': 'Audio features are disabled in text-only mode'}), 400
 
 @app.route('/api/test-question', methods=['POST'])
 def test_question():
