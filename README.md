@@ -2,7 +2,7 @@
 
 **Fully local AI-powered content analysis and Q&A platform** - No cloud APIs required!
 
-MyAIGist Local runs entirely on your machine using free, open-source AI models via Ollama, Whisper.cpp, and Piper. Process documents, analyze content, and ask questions - all while keeping your data completely private.
+MyAIGist Local runs entirely on your machine using free, open-source AI models via Ollama. Process documents, analyze content, and ask questions - all while keeping your data completely private.
 
 ## Features
 
@@ -44,12 +44,14 @@ That's it! The script will:
 
 ## What's Running
 
-MyAIGist Local consists of 4 Docker containers:
+MyAIGist Local consists of 2 Docker containers:
 
 | Service | Purpose | Port | Model |
 |---------|---------|------|-------|
 | **App** | Flask web application | 8000 | - |
 | **Ollama** | LLM & embeddings | 11434 | tinyllama, nomic-embed-text |
+
+**Note:** Audio transcription and TTS features require additional services (Whisper and Piper). See the QA environment configuration in `docker-compose.qa.yml` for the full setup with audio support.
 
 ## Usage
 
@@ -81,17 +83,17 @@ Edit `.env` to customize:
 
 ```bash
 # Model Selection
-OLLAMA_MODEL=qwen2.5:14b          # Or llama3.3:70b for better quality
+OLLAMA_MODEL=tinyllama              # Or qwen2.5:14b for better quality
 OLLAMA_EMBED_MODEL=nomic-embed-text
 
 # Service Endpoints (defaults work in Docker)
 OLLAMA_HOST=http://ollama:11434
-WHISPER_HOST=http://whisper:9000
-PIPER_HOST=http://piper:10200
 
 # Application
 MAX_CONTENT_LENGTH=52428800       # 50MB upload limit
 ```
+
+**Note:** For audio features (transcription and TTS), additional environment variables `WHISPER_HOST` and `PIPER_HOST` are required. See `docker-compose.qa.yml` for the full configuration.
 
 ### Model Tiers
 
@@ -241,28 +243,31 @@ See [CLAUDE.md](CLAUDE.md) for complete development workflow including:
 │   - Document processing                 │
 │   - API endpoints                       │
 │   - Vector store management             │
-└─┬──────────┬──────────┬─────────────────┘
-  │          │          │
-  │ Ollama   │ Whisper  │ Piper
-  │ (LLM)    │ (ASR)    │ (TTS)
-  │          │          │
-┌─▼──────┐ ┌─▼──────┐ ┌─▼──────┐
-│Ollama  │ │Whisper │ │Piper   │
-│Service │ │Service │ │Service │
-│:11434  │ │:9000   │ │:10200  │
-└────────┘ └────────┘ └────────┘
+└────────────────┬────────────────────────┘
+                 │
+              Ollama
+              (LLM)
+                 │
+         ┌───────▼───────┐
+         │ Ollama Service│
+         │    :11434     │
+         └───────────────┘
 ```
+
+**Note:** The QA environment (`docker-compose.qa.yml`) includes additional Whisper (ASR) and Piper (TTS) services for audio transcription and text-to-speech features.
 
 ## Tech Stack
 
 - **Backend**: Flask, Python 3.11
 - **Frontend**: Vanilla JavaScript
-- **LLM**: Ollama (qwen2.5:14b)
+- **LLM**: Ollama (default: tinyllama, configurable to qwen2.5:14b or llama3.3:70b)
 - **Embeddings**: nomic-embed-text (768 dims)
-- **Transcription**: Whisper.cpp (medium model)
-- **TTS**: Piper (lessac voice)
 - **Vector Store**: NumPy + pickle
 - **Deployment**: Docker Compose
+
+**QA Environment Add-ons:**
+- **Transcription**: Whisper.cpp (base model via onerahmet/openai-whisper-asr-webservice)
+- **TTS**: Piper (en_US-lessac-medium voice via linuxserver/piper)
 
 ## Privacy & Security
 
@@ -271,21 +276,11 @@ See [CLAUDE.md](CLAUDE.md) for complete development workflow including:
 - **No API Keys**: No cloud service credentials needed
 - **Data Ownership**: Your documents never leave your computer
 
-## Performance
-
-Typical response times on MacBook Pro (16GB RAM):
-- Document upload: <1s
-- Summarization: 5-10s
-- Q&A answer: 3-5s
-- Audio transcription: Real-time to 2x speed
-- TTS generation: <2s
-
 ## Known Limitations
 
 - **Single User**: Designed for personal use, not multi-user
 - **Local Resources**: Performance depends on your hardware
 - **Model Size**: Quality vs speed tradeoffs
-- **No GPU Acceleration**: Uses CPU (M-series Macs are fast)
 
 ## Roadmap
 
